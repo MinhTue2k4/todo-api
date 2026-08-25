@@ -1,0 +1,29 @@
+{
+  "name": "phase-1",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000t\u0000o\u0000d\u0000o\u0000-\u0000a\u0000p\u0000i\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MinhTue2k4/todo-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MinhTue2k4/todo-api/issues"
+  },
+  "homepage": "https://github.com/MinhTue2k4/todo-api#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.3.0",
+    "typescript": "^7.0.2"
+  }
+}

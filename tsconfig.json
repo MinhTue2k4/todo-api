@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",  
+        "module": "CommonJS", 
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "esModuleInterop": true, // import/export giữa CommonJS và ES Modules
+        "forceConsistentCasingInFileNames": true, //Ép import đúng kiểu chữ (tránh lỗi giữa Windows/Linux)
+        "strict": true, // kiểm tra type 
+        "skipLibCheck": true // Bỏ qua check type trong thư viện (cho build nhanh hơn)
+    },
+    "include": [
+        "src/**/*" //file/ folder cần compile
+    ],
+    "exclude": [ // file/ folder không cần compile
+        "node_modules", 
+        "dist"
+    ]
+}
