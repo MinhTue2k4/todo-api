@@ -4,18 +4,15 @@
 
 
 ## Đã kiểm tra thế nào
-<!-- Chạy gì, thấy gì. `tsc` xanh KHÔNG đủ — nó chỉ nói kiểu nhất quán,
-     không nói chương trình chạy đúng.
-     Nếu thay đổi chỉ ở tầng kiểu (output JS không đổi) thì ghi rõ như vậy. -->
+<!-- Chạy gì, thấy gì. Dán output thật vào đây: response + status code, hoặc log
+     từ console. Mô tả bằng lời không thay được output. -->
 
 
 ## Ticket
-<!-- VD: Bước 5 — classicboy/fullstack-js-roadmap#7 -->
+<!-- VD: Bước 2 — classicboy/fullstack-js-roadmap#10 -->
 
 
 ## Trước khi xin review
-- [ ] Đã mở lại ticket, đối chiếu **từng** checkbox — không còn cái nào chưa xử lý
-- [ ] Câu hỏi trong ticket đã trả lời **ngay trong PR này**, không rải sang ticket
-- [ ] Đã chạy thật, không chỉ `tsc` — hoặc ghi rõ vì sao lần này không cần chạy
-- [ ] `dist/` đã build lại khớp source
+- [ ] Đảm bảo đã làm đủ tất cả các yêu cầu của issue
+- [ ] Đã chạy thật và dán output vào mục "Đã kiểm tra thế nào"
 - [ ] Đã tự đọc lại diff của mình trước khi bấm xin review
