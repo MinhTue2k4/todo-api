@@ -7,7 +7,16 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)(); //returns an object "application" that having methods
 const port = 3000;
 let nextId = 2;
-app.use(express_1.default.json());
+// Middleware là một đoạn code mà request sẽ đi qua trước khi tới route tiếp theo.
+app.use(express_1.default.json()); //register a middleware 
+app.use((req, res, next) => {
+    const start = Date.now(); //time start 
+    res.on('finish', () => {
+        const processTime = Date.now() - start; //time end - time start = run time of the process
+        console.log(`${req.method} ${req.path} - ${processTime}ms`);
+    });
+    next();
+});
 ;
 const todos = [
     {

@@ -1,10 +1,18 @@
 import express, { type Express, type Request, type Response } from 'express';
 const app: Express = express() //returns an object "application" that having methods
 const port = 3000;
-
 let nextId = 2;
-app.use(express.json());
 
+// Middleware là một đoạn code mà request sẽ đi qua trước khi tới route tiếp theo.
+app.use(express.json()); //register a middleware 
+app.use((req:Request, res:Response, next) => {
+    const start = Date.now() //time start 
+    res.on('finish', () => {
+        const processTime = Date.now() - start; //time end - time start = run time of the process
+        console.log(`${req.method} ${req.path} - ${processTime}ms`)
+    }) 
+    next(); 
+});
 interface Todo {
     title: string;
     id: number;
@@ -69,8 +77,8 @@ app.put('/todos/:id', (req: Request, res: Response) => {
 app.delete('/todos/:id', (req: Request, res: Response) => {
     const id = Number(req.params.id);
     const deleteIndex = todos.findIndex(todo => todo.id === id);
-/*findIndex trả về vị trí index đầu tiên mà thỏa mãn điều kiện. 
-If not, it returns -1, indicating that no element passed the test.*/
+    /*findIndex trả về vị trí index đầu tiên mà thỏa mãn điều kiện. 
+    If not, it returns -1, indicating that no element passed the test.*/
     if (deleteIndex === -1) {
         res.status(404).json({ message: 'Not found! 404 error' })
         return;
