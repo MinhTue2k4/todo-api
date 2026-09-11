@@ -11,7 +11,7 @@ app.use((req:Request, res:Response, next) => {
         const processTime = Date.now() - start; //time end - time start = run time of the process
         console.log(`${req.method} ${req.path} - ${processTime}ms`)
     }) 
-    next(); 
+    next(); //does NOT block request, but without this, request from clients will just stop at one route
 });
 interface Todo {
     title: string;
