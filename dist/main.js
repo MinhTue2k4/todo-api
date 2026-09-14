@@ -15,7 +15,7 @@ app.use((req, res, next) => {
         const processTime = Date.now() - start; //time end - time start = run time of the process
         console.log(`${req.method} ${req.path} - ${processTime}ms`);
     });
-    next();
+    next(); //does NOT block request, but without this, request from clients will just stop at one route
 });
 ;
 const todos = [
@@ -31,12 +31,32 @@ app.get('/todos', (req, res) => {
 });
 //create new 
 app.post('/todos', (req, res) => {
-    if (!req.body.title || req.body.done === undefined) {
-        res.status(400).json({ message: "Bad request 400 error" });
+    const errors = [];
+    let title = "";
+    if (typeof req.body.title !== "string") {
+        errors.push("Title must be a string");
+    }
+    else {
+        title = req.body.title.trim();
+        if (title.length === 0) {
+            errors.push("Title is required");
+        }
+        else if (title.length < 3) {
+            errors.push("Title must be at least 3 characters");
+        }
+        else if (title.length > 100) {
+            errors.push("Title must not exceed 100 characters");
+        }
+    }
+    if (req.body.done === undefined) {
+        errors.push("Done is required");
+    }
+    if (errors.length > 0) {
+        res.status(400).json({ message: "Bad request 400 error", errors: errors });
         return;
     }
     const newTodo = {
-        title: req.body.title,
+        title: title,
         id: nextId++,
         done: req.body.done
     };
@@ -62,11 +82,31 @@ app.put('/todos/:id', (req, res) => {
         res.status(404).json({ message: "Not found! 404 error" });
         return;
     }
-    if (!req.body.title || req.body.done === undefined) {
-        res.status(400).json({ message: "Bad request 400 error" });
+    const errors = [];
+    let title = "";
+    if (typeof req.body.title !== "string") {
+        errors.push("Title must be a string");
+    }
+    else {
+        title = req.body.title.trim();
+        if (title.length === 0) {
+            errors.push("Title is required");
+        }
+        else if (title.length < 3) {
+            errors.push("Title must be at least 3 characters");
+        }
+        else if (title.length > 100) {
+            errors.push("Title must not exceed 100 characters");
+        }
+    }
+    if (req.body.done === undefined) {
+        errors.push("Done is required");
+    }
+    if (errors.length > 0) {
+        res.status(400).json({ message: "Bad request 400 error", errors: errors });
         return;
     }
-    todo.title = req.body.title;
+    todo.title = title;
     todo.done = req.body.done;
     res.json(todo);
 });
@@ -77,12 +117,13 @@ app.delete('/todos/:id', (req, res) => {
     /*findIndex trả về vị trí index đầu tiên mà thỏa mãn điều kiện.
     If not, it returns -1, indicating that no element passed the test.*/
     if (deleteIndex === -1) {
-        res.status(404).json({ message: 'Not found! 404 error' });
+        res.status(404).json({ message: "Not found! 404 error" });
         return;
     }
     todos.splice(deleteIndex, 1); //not 0 because splice(start, deleteCount) => deleteCount = 1 (vì chỉ có xóa 1 phần tử thôi mà)
     res.json({ message: 'Deleted!' });
 });
+app.use((req, res) => { res.status(404).json({ message: "Not found! 404 error" }); });
 app.listen(port, () => {
     console.log(`example on port ${port}`);
 });
