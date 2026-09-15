@@ -35,7 +35,16 @@ app.get('/todos', (req: Request, res: Response) => {
 app.post('/todos', (req: Request, res: Response) => {
     const errors = [];
     let title = "";
-    if (typeof req.body.title !== "string") {
+    if (!req.body) {
+        return res.status(400).json({
+            message: "Bad request 400 error",
+            errors: ["Request body is missing"]
+        })
+    }
+
+    if (req.body.title === undefined) {
+        errors.push("Title is required");
+    } else if (typeof req.body.title !== "string") {
         errors.push("Title must be a string");
     } else {
         title = req.body.title.trim();
@@ -85,7 +94,15 @@ app.put('/todos/:id', (req: Request, res: Response) => {
     }
     const errors = [];
     let title = "";
-    if (typeof req.body.title !== "string") {
+    if (!req.body) {
+        return res.status(400).json({
+            message: "Bad request 400 error",
+            errors: ["Request body is missing"]
+        })
+    }
+    if (req.body.title === undefined) {
+        errors.push("Title is required");
+    } else if (typeof req.body.title !== "string") {
         errors.push("Title must be a string");
     } else {
         title = req.body.title.trim();
