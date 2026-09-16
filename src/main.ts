@@ -1,4 +1,5 @@
 import express, { type Express, type Request, type Response } from 'express';
+import { json } from 'stream/consumers';
 const app: Express = express() //returns an object "application" that having methods
 const port = 3000;
 let nextId = 2;
@@ -142,6 +143,18 @@ app.delete('/todos/:id', (req: Request, res: Response) => {
     res.json({ message: 'Deleted!' })
 })
 app.use((req: Request, res: Response) => { res.status(404).json({ message: "Not found! 404 error" }); })
+app.use((err: any, req: Request, res: Response, next: Function) => {
+    if(err.type === 'entity.parse.failed') {
+        return res.status(400).json({
+            message: "Bad request 400 error",
+            errors: [err.message]
+        })
+    }
+    res.status(500).json({
+        message: "Internal server error",
+        errors: [err.message]
+    })
+})
 app.listen(port, () => {
     console.log(`example on port ${port}`);
 })
