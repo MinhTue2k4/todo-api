@@ -143,8 +143,8 @@ app.delete('/todos/:id', (req, res) => {
 });
 app.use((req, res) => { res.status(404).json({ message: "Not found! 404 error" }); });
 app.use((err, req, res, next) => {
-    if (err.type === 'entity.parse.failed') {
-        return res.status(400).json({
+    if (err.status && err.status < 500) {
+        return res.status(err.status).json({
             message: "Bad request 400 error",
             errors: [err.message]
         });
