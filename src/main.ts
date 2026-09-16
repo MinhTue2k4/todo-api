@@ -5,12 +5,12 @@ let nextId = 2;
 
 // Middleware là một đoạn code mà request sẽ đi qua trước khi tới route tiếp theo.
 app.use(express.json()); //register a middleware 
-app.use((req:Request, res:Response, next) => {
+app.use((req: Request, res: Response, next) => {
     const start = Date.now() //time start 
     res.on('finish', () => {
         const processTime = Date.now() - start; //time end - time start = run time of the process
         console.log(`${req.method} ${req.path} - ${processTime}ms`)
-    }) 
+    })
     next(); //does NOT block request, but without this, request from clients will just stop at one route
 });
 interface Todo {
@@ -33,12 +33,39 @@ app.get('/todos', (req: Request, res: Response) => {
 
 //create new 
 app.post('/todos', (req: Request, res: Response) => {
-    if (!req.body.title || req.body.done === undefined) {
-        res.status(400).json({ message: "Bad request 400 error" })
+    const errors = [];
+    let title = "";
+    if (!req.body) {
+        return res.status(400).json({
+            message: "Bad request 400 error",
+            errors: ["Request body is missing"]
+        })
+    }
+
+    if (req.body.title === undefined) {
+        errors.push("Title is required");
+    } else if (typeof req.body.title !== "string") {
+        errors.push("Title must be a string");
+    } else {
+        title = req.body.title.trim();
+
+        if (title.length === 0) {
+            errors.push("Title is required");
+        } else if (title.length < 3) {
+            errors.push("Title must be at least 3 characters");
+        } else if (title.length > 100) {
+            errors.push("Title must not exceed 100 characters");
+        }
+    }
+    if (req.body.done === undefined) {
+        errors.push("Done is required");
+    }
+    if (errors.length > 0) {
+        res.status(400).json({ message: "Bad request 400 error", errors: errors });
         return;
     }
     const newTodo: Todo = {
-        title: req.body.title,
+        title: title,
         id: nextId++,
         done: req.body.done
     }
@@ -65,11 +92,39 @@ app.put('/todos/:id', (req: Request, res: Response) => {
         res.status(404).json({ message: "Not found! 404 error" })
         return;
     }
-    if (!req.body.title || req.body.done === undefined) {
-        res.status(400).json({ message: "Bad request 400 error" })
+    const errors = [];
+    let title = "";
+    if (!req.body) {
+        return res.status(400).json({
+            message: "Bad request 400 error",
+            errors: ["Request body is missing"]
+        })
+    }
+    if (req.body.title === undefined) {
+        errors.push("Title is required");
+    } else if (typeof req.body.title !== "string") {
+        errors.push("Title must be a string");
+    } else {
+        title = req.body.title.trim();
+
+        if (title.length === 0) {
+            errors.push("Title is required");
+        } else if (title.length < 3) {
+            errors.push("Title must be at least 3 characters");
+        } else if (title.length > 100) {
+            errors.push("Title must not exceed 100 characters");
+        }
+    }
+
+    if (req.body.done === undefined) {
+        errors.push("Done is required");
+    }
+    if (errors.length > 0) {
+        res.status(400).json({ message: "Bad request 400 error", errors: errors });
         return;
     }
-    todo.title = req.body.title;
+
+    todo.title = title;
     todo.done = req.body.done;
     res.json(todo);
 })
@@ -80,11 +135,24 @@ app.delete('/todos/:id', (req: Request, res: Response) => {
     /*findIndex trả về vị trí index đầu tiên mà thỏa mãn điều kiện. 
     If not, it returns -1, indicating that no element passed the test.*/
     if (deleteIndex === -1) {
-        res.status(404).json({ message: 'Not found! 404 error' })
+        res.status(404).json({ message: "Not found! 404 error" })
         return;
     }
     todos.splice(deleteIndex, 1) //not 0 because splice(start, deleteCount) => deleteCount = 1 (vì chỉ có xóa 1 phần tử thôi mà)
     res.json({ message: 'Deleted!' })
+})
+app.use((req: Request, res: Response) => { res.status(404).json({ message: "Not found! 404 error" }); })
+app.use((err: any, req: Request, res: Response, next: Function) => {
+    if(err.status && err.status < 500) {
+        return res.status(err.status).json({
+            message: "Bad request 400 error",
+            errors: [err.message]
+        })
+    }
+    res.status(500).json({
+        message: "Internal server error",
+        errors: [err.message]
+    })
 })
 app.listen(port, () => {
     console.log(`example on port ${port}`);
