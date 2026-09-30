@@ -145,7 +145,7 @@ app.use((req: Request, res: Response) => { res.status(404).json({ message: "Not 
 app.use((err: any, req: Request, res: Response, next: Function) => {
     if(err.status && err.status < 500) {
         return res.status(err.status).json({
-            message: "Bad request 400 error",
+            message: `Error ${err.status} !`,
             errors: [err.message]
         })
     }
